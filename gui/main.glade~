@@ -336,7 +336,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkComboBox" id="deviceComboBox">
+                      <object class="GtkComboBox" id="driveComboBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
