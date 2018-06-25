@@ -1,3 +1,21 @@
+#!/usr/bin/python3
+
+
+# ========= TODO LIST ========= #
+# FORMAT BUTTON WORKING
+# FLASH BUTTON WORKING
+# AUTO DOWNLOAD AND SELECT OS
+# BOOTLOADER AUTO INSTALLER
+# LOG ENGINE (DISPLAY ERRORS AND MESSAGES)
+# PROGRESS DISPLAY
+
+# ========= CONTRIBUTERS ========= #
+# Himanshu Rastogi <hi.himanshu14@gmail.com> --> AUTHOR
+# ...?
+
+
+
+
 import gi
 gi.require_version('Gtk','3.0')
 from gi.repository import Gtk
@@ -22,7 +40,7 @@ class FlashyPi(Gtk.Window):
 
         self.fileChooer = self.builder.get_object('fileChooser')
         self.fileReloadButton = self.builder.get_object('fileReloadButton')
-        self.fileReloadButton.connect('clicked', self.fileReloadButtonClicked)
+        # self.fileReloadButton.connect('clicked', self.fileReloadButtonClicked)
 
         self.driveComboBox = self.builder.get_object('driveComboBox')
         self.listStoreCreate()

@@ -22,14 +22,10 @@
     <property name="can_focus">False</property>
     <property name="icon_name">object-rotate-left</property>
   </object>
-  <object class="GtkImage" id="image5">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">object-rotate-left</property>
-  </object>
   <object class="GtkWindow" id="mainWin">
     <property name="can_focus">False</property>
     <property name="default_width">480</property>
+    <property name="icon">icon.png</property>
     <child type="titlebar">
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -100,9 +96,10 @@
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="homogeneous">True</property>
                     <child>
                       <object class="GtkRadioButton">
-                        <property name="label" translatable="yes">Select and Download OS</property>
+                        <property name="label" translatable="yes">Select OS</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
@@ -137,6 +134,7 @@
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="homogeneous">True</property>
                     <child>
                       <object class="GtkRadioButton">
                         <property name="label" translatable="yes">Select Image File</property>
@@ -201,6 +199,7 @@
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="homogeneous">True</property>
                     <child>
                       <object class="GtkRadioButton">
                         <property name="label" translatable="yes">Select OS Manager</property>
@@ -299,7 +298,6 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
-            <property name="spacing">2</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
@@ -316,13 +314,11 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">2</property>
-                <property name="margin_right">2</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_right">77</property>
+                    <property name="margin_left">10</property>
                     <property name="label" translatable="yes">Select Device</property>
                   </object>
                   <packing>
@@ -339,6 +335,7 @@
                       <object class="GtkComboBox" id="driveComboBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="margin_left">10</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -351,8 +348,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="margin_left">1</property>
-                        <property name="margin_right">1</property>
                         <property name="image">image5</property>
                       </object>
                       <packing>
@@ -385,6 +380,7 @@
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_left">10</property>
                     <property name="margin_right">92</property>
                     <property name="label" translatable="yes">Drive Label</property>
                     <property name="justify">center</property>
@@ -400,6 +396,8 @@
                   <object class="GtkEntry" id="driveLabelEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="margin_left">10</property>
+                    <property name="margin_right">10</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -426,9 +424,6 @@
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">5</property>
-            <property name="margin_right">5</property>
-            <property name="spacing">10</property>
             <property name="homogeneous">True</property>
             <child>
               <object class="GtkButton" id="formatButton">
@@ -518,5 +513,10 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkImage" id="image5">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">object-rotate-left</property>
   </object>
 </interface>
