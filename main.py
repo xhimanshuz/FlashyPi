@@ -52,11 +52,11 @@ class FlashyPi(Gtk.Window):
 
         self.radioNoobs = self.builder.get_object('radioNoobs')
         self.radioBerryboot = self.builder.get_object('radioBerryboot')
-        self.radioPinns = self.builder.get_object('radioPinns')
+        self.radioPinn = self.builder.get_object('radioPinn')
 
         self.radioNoobs.connect('toggled',self.bootloaderToggled, 'noobs')
         self.radioBerryboot.connect('toggled',self.bootloaderToggled, 'berryboot')
-        self.radioPinns.connect('toggled',self.bootloaderToggled, 'pinns')
+        self.radioPinn.connect('toggled',self.bootloaderToggled, 'pinn')
         
 
         self.fileChooer = self.builder.get_object('fileChooser')
@@ -166,9 +166,8 @@ class FlashyPi(Gtk.Window):
 
     def noobsInstaller(self):
         print('noobs installer')
-        # flag = subprocess.call('wget https://downloads.raspberrypi.org/NOOBS_lite_latest -O /tmp/noobs.zip -s'.split())
-        # if flag:
-        if 0:
+        flag = subprocess.call('wget https://downloads.raspberrypi.org/NOOBS_lite_latest -O /tmp/noobs.zip -s'.split())
+        if flag:
             self.msg('Error in Downloading Noobs Installer')
             # return True
         else:
@@ -184,7 +183,23 @@ class FlashyPi(Gtk.Window):
                 # return True        
 
     def berrybootInstaller(self):
-        pass
+        print('Berryboot installer')
+        flag = subprocess.call('wget -q http://downloads.sourceforge.net/project/berryboot/berryboot-20180405-pi0-pi1-pi2-pi3.zip -O /tmp/berryboot.zip'.split())
+        if flag[0]:
+            self.msg('Error in Downloading BerryBoot Installer')
+            # return True
+        else:
+            self.msg('Berry Installer successfully downloaded now preparing to install for Noobs in USB Drive')
+            if self.formatDrive():
+                flag = subprocess.getstatusoutput('sudo unzip -o /tmp/berryboot.zip -d {}'.format(self.mountpoint()))
+                if flag[0]:
+                    self.msg('Error in installing Berryboot')
+                    print(flag[1])
+                else:
+                    self.msg('Berryboot Successfully Installed in {}'.format(self.mountpoint()), flag[1])
+            else:
+                print('Error in formating Drive')
+                # return True 
         
 
     def formatButtonClicked(self, widget):
@@ -199,14 +214,34 @@ class FlashyPi(Gtk.Window):
         elif self.choice == 'selectBootloader':
             if self.bootloaderChoice == 'noobs':
                 self.noobsInstaller()
-            elif self.bootloaderChoice == 'pinns':
-                print('Pinns')
+            elif self.bootloaderChoice == 'pinn':
+                print('Pinn')
             elif self.bootloaderChoice == 'berryboot':
-                print('berryboot')
+                self.berrybootInstaller()
             else:
                 self.msg('Please select Bootloader')
         else:
             self.msg('Please Choose Method')
+
+
+    def pinnInstaller(self):
+        print('PINN installer')
+        flag = subprocess.call('wget https://sourceforge.net/projects/pinn/files/latest/download -O /tmp/pinn.zip -s'.split())
+        if flag:
+            self.msg('Error in Downloading PINN Installer')
+            # return True
+        else:
+            self.msg('PINN Installer successfully downloaded now preparing to install for Noobs in USB Drive')
+            if self.formatDrive():
+                flag = subprocess.getstatusoutput('sudo unzip -o /tmp/pinn.zip -d {}'.format(self.mountpoint()))
+                if flag[0]:
+                    self.msg('Error in installing PINN')
+                else:
+                    self.msg('PINN Successfully Installed in {}'.format(self.mountpoint()), flag[1])
+            else:
+                print('Error in formating Drive')
+                # return True 
+        
 
     def otherButtonClicked(self, widget,):
         # self.textBuffer.insert(self.textBuffer.get_end_iter(), "AS saod D", -1)

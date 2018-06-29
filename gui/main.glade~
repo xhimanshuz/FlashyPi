@@ -277,8 +277,8 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkRadioButton" id="radioPinns">
-                            <property name="label" translatable="yes">PINNS</property>
+                          <object class="GtkRadioButton" id="radioPinn">
+                            <property name="label" translatable="yes">PINN</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
