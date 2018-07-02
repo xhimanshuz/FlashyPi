@@ -2,7 +2,7 @@
 Raspberry Pi Formating and OS Flashing Utility
 #### Instruction
 ```shell
-chmown +x main.py && sudo ./main.py
+chmown +x flashypi.py && sudo ./flashypi.py
 ```
 # Screenshot
 ![alt text](https://github.com/xhimanshuz/FlashyPi/blob/master/data/img1.png)

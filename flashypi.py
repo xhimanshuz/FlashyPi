@@ -21,6 +21,14 @@ gi.require_version('Gtk','3.0')
 from gi.repository import Gtk
 import subprocess                   # CONTROL GNU/LINUX PROCESS
 import json                         # JSON API - TO FETCH JSON DATA
+import os
+
+
+# GLOBAL VAIRABLE FOR COLOR
+RED = "\033[91m"
+WHITE = "\033[00m"
+GREEN = "\033[92m"
+YELLOW = "\033[93m"
 
 class FlashyPi(Gtk.Window):
     def __init__(self):
@@ -284,5 +292,12 @@ class FlashyPi(Gtk.Window):
         Gtk.main()
         pass
 
-win = FlashyPi()
-win.run()           # RUN THE ENGINE
+
+ # RUN THE ENGINE
+if not os.getuid(): #CHECKING ROOT USER
+    print(YELLOW)
+    win = FlashyPi()
+    win.run()
+else:
+    print("{}[!] {}flashypi {}must run as {}root".format(RED, GREEN, YELLOW, RED))
+    print("{}try {}sudo ./flashypi.py".format(YELLOW, WHITE))          
