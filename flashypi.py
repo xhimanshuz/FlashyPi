@@ -65,6 +65,7 @@ class FlashyPi(Gtk.Window):
         
 
         self.fileChooer = self.builder.get_object('fileChooser')
+        self.fileChooer.connect('selection-changed', self.onSelectFile)
         self.fileReloadButton = self.builder.get_object('fileReloadButton')
         # self.fileReloadButton.connect('clicked', self.fileReloadButtonClicked)
 
@@ -74,6 +75,9 @@ class FlashyPi(Gtk.Window):
         self.addToListStore()
         self.driveComboBox.set_active(0)
         self.deviceReloadButton = self.builder.get_object('deviceReloadButton')
+
+        self.driveLabelEntry = self.builder.get_object('driveLabelEntry')
+        self.driveLabelEntry.set_text("FlashyPi")
 
         self.formatButton = self.builder.get_object('formatButton')
         self.otherButton = self.builder.get_object('otherButton')
@@ -159,7 +163,7 @@ class FlashyPi(Gtk.Window):
             self.msg('Error in Unmounting\n', flag[1])  #ERROR IF THERE IS PROBLEM IN UNMOUNTING
         else:
             self.msg('Successfully Unmounted')
-        flag = subprocess.getstatusoutput('sudo fatlabel {} FlashyPi'.format(self.drive+'1'))   #
+        flag = subprocess.getstatusoutput('sudo fatlabel {} {}}'.format(self.drive+'1', self.driveLabelEntry.get_text()))   #
         if flag[0]:
             self.msg('Error in Renaming ', flag[1])
         else:
@@ -256,10 +260,19 @@ class FlashyPi(Gtk.Window):
         self.loading.pulse()
         self.formatDrive()
 
+    def flashImage(self):
+        file = self.fileChooer.get_filename()
+        if(self.formatDrive()):
+            flag = subprocess.getstatusoutput("dd bs=4M if={} of={} conv=fsync".format(file, self.drive))
+            if flag[0]:
+                self.msg('Error in flashing {}'.flag[1])
+            else:
+                print("Successfully Flashed!, {}".format(flag[1]))
+
     # THIS FUNCTION CALL WHEN FLASH BUTTON CLICKED
     def flashButtonClicked(self, widget):
         if self.choice == 'selectImage':        # CHECK RADIO BUTTON THEN ACT ACCORDINGLY
-            print('Image')
+            self.flashImage()
         elif self.choice == 'selectOS':
             print('SelectOS')
         elif self.choice == 'selectBootloader':
@@ -275,10 +288,10 @@ class FlashyPi(Gtk.Window):
             self.msg('Please Choose Method')
        
 
-    # MESSAGES PASSING IN LOG ENGINE
+    # MESSAGES PASSING IN LOG ENGINE - Little fix todo for text[0]
     def msg(self, *text):
         # print(text)
-        self.textBuffer.insert(self.textBuffer.get_start_iter(), str(text)+'\n', -1)
+        self.textBuffer.insert(self.textBuffer.get_start_iter(), str(text[0].strip())+'\n', -1)
     
     # MESSAGES PASSING ON LOADING BAR
     def lmsg(self, text):
@@ -291,6 +304,11 @@ class FlashyPi(Gtk.Window):
         self.mainWin.show_all()
         Gtk.main()
         pass
+
+
+    def onSelectFile(self, widget):
+        string = widget.get_filename()
+        self.msg(str(string) + " Selected")
 
 
  # RUN THE ENGINE
