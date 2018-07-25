@@ -163,7 +163,8 @@ class FlashyPi(Gtk.Window):
             self.msg('Error in Unmounting\n', flag[1])  #ERROR IF THERE IS PROBLEM IN UNMOUNTING
         else:
             self.msg('Successfully Unmounted')
-        flag = subprocess.getstatusoutput('sudo fatlabel {} {}}'.format(self.drive+'1', self.driveLabelEntry.get_text()))   #
+            #RENAMING DRIVE LABEL
+        flag = subprocess.getstatusoutput('sudo fatlabel {} {}'.format(self.drive+'1', self.driveLabelEntry.get_text()))   #
         if flag[0]:
             self.msg('Error in Renaming ', flag[1])
         else:
@@ -173,7 +174,7 @@ class FlashyPi(Gtk.Window):
             print('Error in Partitioning: {}'.format(self.drive), flag[1])
         else:
             self.loading.pulse()
-            print('Successfully Partitoned..!\n', flag[1])
+            self.msg('Successfully Partitoned..!\n', flag[1])
             flag = subprocess.getstatusoutput('sudo mkfs.vfat {}'.format((self.drive+'1')))
             if flag[0]:
                 print('Error in Formating Drive: {}'.format((self.drive+'1')), flag[1])
@@ -194,7 +195,7 @@ class FlashyPi(Gtk.Window):
             print('New Mountpoint: ',self.mountpoint())
             return False
         else:
-            print('New Mountpoint: ',self.mountpoint())
+            self.msg('New Mountpoint: ',self.mountpoint())
             return True
 
     def pinnInstaller(self):                                # DOWNLOAD AND INSTALL PINN BOOTLOADER IN USB DRIVE OR SD CARD AUTOMATICALLY
@@ -262,12 +263,13 @@ class FlashyPi(Gtk.Window):
 
     def flashImage(self):
         file = self.fileChooer.get_filename()
+        print(file, self.drive+"1")
         if(self.formatDrive()):
-            flag = subprocess.getstatusoutput("dd bs=4M if={} of={} conv=fsync".format(file, self.drive))
+            flag = subprocess.getstatusoutput("dd bs=4M if='{}' of={} conv=fsync".format(str(file), self.drive+'1'))
             if flag[0]:
-                self.msg('Error in flashing {}'.flag[1])
+                self.msg('Error in flashing {}'.format(flag[1]))
             else:
-                print("Successfully Flashed!, {}".format(flag[1]))
+                self.msg("Successfully Flashed!, {}".format(flag[1]))
 
     # THIS FUNCTION CALL WHEN FLASH BUTTON CLICKED
     def flashButtonClicked(self, widget):
@@ -290,8 +292,14 @@ class FlashyPi(Gtk.Window):
 
     # MESSAGES PASSING IN LOG ENGINE - Little fix todo for text[0]
     def msg(self, *text):
+        if(isinstance(text, (tuple))):
+            string = " "
+            for t in text:
+                string +=t
+                string +=" "
+            text = string
         # print(text)
-        self.textBuffer.insert(self.textBuffer.get_start_iter(), str(text[0].strip())+'\n', -1)
+        self.textBuffer.insert(self.textBuffer.get_start_iter(), str(text)+'\n', -1)
     
     # MESSAGES PASSING ON LOADING BAR
     def lmsg(self, text):
