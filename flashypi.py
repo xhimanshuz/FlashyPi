@@ -86,8 +86,8 @@ class FlashyPi(Gtk.Window):
         self.loading = self.builder.get_object('loading')
 
         self.ejectCheckBox = self.builder.get_object('ejectCheckBox')
-        self.ejectCheckBox.connect('toggled', self.ejectCheckBoxToggled)
         self.ejectCheckBox.set_active(self.ejectDrive)
+        self.ejectCheckBox.connect('toggled', self.ejectCheckBoxToggled)
 
         self.textView = self.builder.get_object('textView')
         self.textBuffer = Gtk.TextBuffer()
@@ -168,9 +168,9 @@ class FlashyPi(Gtk.Window):
 
     def ejectCheckBoxToggled(self, widget):  # EJECT DRIVE AFTER FORMATTING
         if self.ejectCheckBox.get_active():
-            print('Auto Eject is ON')
+            self.msg("Auto Eject is ON")
         else:
-            print('Auto Eject is OFF')
+            self.msg("Auto Eject is OFF")
 
     def mountpoint(self):
         mp = " ".join(subprocess.getstatusoutput(
