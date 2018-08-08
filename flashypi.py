@@ -38,7 +38,7 @@ class FlashyPi(Gtk.Window):
         self.choice = ''
         self.bootloaderChoice = ''
         self.ejectDrive = True
-
+        self.mountpointStr = ""
         Gtk.Window.__init__(self)
         self.importObject()
 
@@ -141,15 +141,15 @@ class FlashyPi(Gtk.Window):
         self.listStore.append(('null', '--- Please Select Device ---'))
         self.driveComboBox.set_active(0)
         for i in data:
-            if i['tran'] == self.dType:
-                tuple = (i['name'], '/dev/' + str(i['name'] +
-                                                  " | " + i['model'] + " | " + i['size']))
-                print(tuple)
+            if i['subsystems'] == "block:mmc:mmc_host:platform:usb:pci" or i['subsystems'] == "block:scsi:usb:pci":
+                tuple = (i['name'], '/dev/' + str(i['name'] + " | " + str(i['model']) + " | " + i['size']))
+                self.mountpointStr = '/dev/' + str(i['name'])
+                print("add", tuple)
                 self.listStore.append(tuple)
 
     def getFromJson(self):                         # FETCH JSON DATA FOR DRIVE DETAIL
         self.jsonData = json.loads(
-            subprocess.getstatusoutput('lsblk -I 8 -n -J -O')[1])
+            subprocess.getstatusoutput('lsblk --include 8,179 -n -J -O')[1])
         self.jsonData = self.jsonData['blockdevices']
         # print(jsonData)
         return self.jsonData
@@ -172,9 +172,10 @@ class FlashyPi(Gtk.Window):
         else:
             self.msg("Auto Eject is OFF")
 
-    def mountpoint(self):
-        mp = " ".join(subprocess.getstatusoutput(
-            'lsblk -I 8 -l -n | grep {}'.format(self.drive.replace('/dev/', '')+'1'))[1].split()[6:])
+    def mountpoint(self): #RETURN example '/dev/sdc'
+        #mp = '/dev/' + (subprocess.getstatusoutput('lsblk --include 8, 179 -l -n | grep {}'.format(self.drive.replace('/dev/', '')+'1'))[1])
+        mp = self.mountpointStr
+        print("mp", mp)
         return mp
 
     # THIS FUCTION IS USED TO FORMAT SELECTED DRIVE
@@ -213,7 +214,8 @@ class FlashyPi(Gtk.Window):
                     self.drive+'1'), flag[1])
                 self.mountDrive()
                 if self.ejectCheckBox.get_active():
-                    self.driveEject()
+                    print("Ejected")
+                    # self.driveEject()
                 return True
 
     def driveEject(self):
@@ -226,6 +228,7 @@ class FlashyPi(Gtk.Window):
 
     def mountDrive(self):                                   # MOUNTING THE SELECT DRIVE
         subprocess.getstatusoutput('sudo mkdir /media/usb')
+        print(self.drive+'1')
         flag = subprocess.getstatusoutput(
             'mount {} /media/usb'.format(self.drive+'1'))
         if flag[0]:
@@ -318,14 +321,16 @@ class FlashyPi(Gtk.Window):
 
     def flashImage(self):
         file = self.fileChooer.get_filename()
-        print(file, self.drive+"1")
-        if(self.formatDrive()):
-            flag = subprocess.getstatusoutput(
-                "dd bs=4M if='{}' of={} conv=fsync".format(str(file), self.drive+'1'))
-            if flag[0]:
-                self.msg('Error in flashing {}'.format(flag[1]))
-            else:
-                self.msg("Successfully Flashed!, {}".format(flag[1]))
+        print(file, self.drive)
+        subprocess.getstatusoutput("umount {}*".format(self.drive))
+        if(subprocess.call(["dd","bs=4M","status=progress","if={}".format(file), "of={}".format(self.drive)])):
+            self.msg("Error in writing Image")
+        else:
+            print("Syncing..!")
+            subprocess.call(['sync'])
+            print("[" + GREEN + "✔"+ YELLOW +"]"  + "Flashed")
+            self.msg("Image: {} writed on {}".format(file, self.drive))
+
 
     # THIS FUNCTION CALL WHEN FLASH BUTTON CLICKED
     def flashButtonClicked(self, widget):
@@ -341,6 +346,7 @@ class FlashyPi(Gtk.Window):
             else:
                 self.msg('Please select Bootloader')
         else:
+            self.notify("Please choos method")
             self.msg('Please Choose Method')
 
     # MESSAGES PASSING IN LOG ENGINE - Little fix todo for text[0]
@@ -357,7 +363,7 @@ class FlashyPi(Gtk.Window):
             self.textBuffer.get_start_iter(), str(text)+'\n', -1)
 
     def notify(self, msg):
-        print(subprocess.call(["notify-send", msg]))
+        subprocess.getstatusoutput("notify-send 'title' ['Body']")
 
     # MESSAGES PASSING ON LOADING BAR
     def lmsg(self, text):
