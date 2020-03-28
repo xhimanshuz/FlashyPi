@@ -141,7 +141,7 @@ class FlashyPi(Gtk.Window):
         self.listStore.append(('null', '--- Please Select Device ---'))
         self.driveComboBox.set_active(0)
         for i in data:
-            if i['subsystems'] == "block:mmc:mmc_host:platform:usb:pci" or i['subsystems'] == "block:scsi:usb:pci":
+            if i['subsystems'] == "block:mmc:mmc_host:platform:usb:pci" or i['subsystems'] == "block:scsi:usb:pci" or i["subsystems"] == "block:mmc:mmc_host:platform:pci":
                 tuple = (i['name'], '/dev/' + str(i['name'] + " | " + str(i['model']) + " | " + i['size']))
                 self.mountpointStr = '/dev/' + str(i['name'])
                 print("add", tuple)
